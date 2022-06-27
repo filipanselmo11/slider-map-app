@@ -1,65 +1,92 @@
 <template>
-  <v-row align="center" justify="center">
-    <v-col cols="12" align-self="center" align="center">
-      <!-- transicao vai aqui -->
-    </v-col>
-    <v-col cols="12" align-self="center" align="center">
-      <v-slider
-        :prepend-icon="play ? 'mdi-pause-circle-outline' : 'mdi-play-circle-outline'"
-        @click:prepend="startSlide"
-        v-model="currentIndex"
-        hide-details
-        min="0"
-        :max="endMap"
-        step="1"
-      />
-    </v-col>
-  </v-row>
+  <div>
+    <transition-group name="fade">
+      <div v-for="index in [currentIndex]" :key="index">
+          <img :src="currentImage"/>
+      </div>
+    </transition-group>
+    <a class="prev" @click="prev" href="#">Prev</a>
+    <a class="next" @click="next" href="#">Next</a>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "AnimationComponent",
-  data() {
-    return {
-      play: false,
-      timer: undefined,
-      currentIndex: undefined,
-      mapImageStartIndex: 0,
-      mapImageEndIndex: 2,
-      maps: [
-        {
-          index: 0,
-          imageUrl: "../assets/mapa-1.jpg",
-        },
-        {
-          index: 1,
-          imageUrl: "../assets/mapa-2.jpg",
-        },
-        {
-          index: 2,
-          imageUrl: "../assets/mapa-3.jpg",
-        },
-      ],
-    };
+  name: "AnimationImageComponent",
+  props: {
+    images: {
+      type: Array,
+    },
+  },
+  data: () => ({
+    timer: undefined,
+    currentIndex: 0,
+  }),
+  mounted() {
+      this.startSlide();
+  },
+  methods: {
+      startSlide() {
+          this.timer = setInterval(this.next, 2000);
+      },
+      next() {
+          this.currentIndex += 1;
+      },
+      prev() {
+          this.currentIndex -= 1;
+      }
   },
   computed: {
-    startMap() {
-      return 0;
-    },
-    currentMap() {
-      return this.map[this.currentIndex % this.maps.length];
-    },
-    endMap() {
-      return this.map.length - 1;
-    },
-  },
-  //   props: {
-  //     mapItem: {
-  //       type: Object,
-  //     },
-  //   },
+      currentImage() {
+          return this.images[Math.abs(this.currentIndex) % this.images.length];
+      }
+  }
 };
 </script>
 
-<style></style>
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.9s ease;
+  overflow: hidden;
+  visibility: visible;
+  position: absolute;
+  width: 100%;
+  opacity: 1;
+}
+.fade-enter,
+.fade-leave-to {
+  visibility: hidden;
+  width: 100%;
+  opacity: 0;
+}
+img {
+  height: 600px;
+  width: 100%;
+}
+.prev,
+.next {
+  cursor: pointer;
+  position: absolute;
+  top: 40%;
+  width: auto;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.7s ease;
+  border-radius: 0 4px 4px 0;
+  text-decoration: none;
+  user-select: none;
+}
+.next {
+  right: 0;
+}
+.prev {
+  left: 0;
+}
+.prev:hover,
+.next:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+</style>
