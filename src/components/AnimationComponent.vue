@@ -1,11 +1,11 @@
 <template>
   <v-row align="center" justify="center">
     <v-col cols="12" align="center" align-self="center" min-height="600">
-      <transition name="fade-slide">
+      <transition-group name="fade">
         <div v-for="index in [currentIndex]" :key="index">
-          <v-img max-height="600" max-width="1200" :src="currentMap" />
+          <v-img width="980" height="672" :src="currentMap" />
         </div>
-      </transition>
+      </transition-group>
     </v-col>
     <v-col cols="12">
       <v-slider
@@ -34,9 +34,21 @@ export default {
     timer: undefined,
     currentIndex: undefined,
     maps: [],
-    map1: [require("../assets/mapa-1.jpg"), require("../assets/mapa-2.jpg"), require("../assets/mapa-3.png")],
-    map2: [require("../assets/mapa-4.jpg"), require("../assets/mapa-5.png"), require("../assets/mapa-6.png")],
-    map3: [require("../assets/mapa-7.png"), require("../assets/mapa-8.png"), require("../assets/mapa-9.png")],
+    map1: [
+      require("../assets/mapa-1.jpg"),
+      require("../assets/mapa-2.jpg"),
+      require("../assets/mapa-3.png"),
+    ],
+    map2: [
+      require("../assets/mapa-4.jpg"),
+      require("../assets/mapa-5.png"),
+      require("../assets/mapa-6.png"),
+    ],
+    map3: [
+      require("../assets/mapa-7.png"),
+      require("../assets/mapa-8.png"),
+      require("../assets/mapa-9.png"),
+    ],
   }),
   watch: {
     map(value) {
@@ -97,15 +109,20 @@ export default {
 </script>
 
 <style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.9s ease;
+  overflow: hidden;
+  visibility: visible;
+  position: absolute;
+  width: 100%;
+  opacity: 1;
+}
 
-.slide-fade-enter-active {
-  transition: all 0.3s ease-out;
-}
-.slide-fade-leave-active {
-  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateX(20px);
+.fade-enter,
+.fade-leave-to {
+  visibility: hidden;
+  width: 100%;
   opacity: 0;
 }
+</style>
